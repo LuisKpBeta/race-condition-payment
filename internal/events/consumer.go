@@ -34,7 +34,7 @@ func CreateConsumer(ch *amqp.Channel, queue amqp.Queue, exchangeName, routingKey
 		false,
 		nil,
 	)
-	msg := fmt.Sprintf("Failed to bind on %s queue using routingKey %s ", exchangeName, routingKey)
+	msg := fmt.Sprintf("Failed to bind on %s queue using routingKey %s \n", exchangeName, routingKey)
 	FailOnError(err, msg)
 	msgs, err := ch.Consume(
 		queue.Name,   // queue
@@ -45,7 +45,7 @@ func CreateConsumer(ch *amqp.Channel, queue amqp.Queue, exchangeName, routingKey
 		false,        // no-wait
 		nil,          // args
 	)
-	msg = fmt.Sprintf("Failed to start consumer %s on exchange %s", consumerName, exchangeName)
+	msg = fmt.Sprintf("Failed to start consumer %s on exchange %s \n", consumerName, exchangeName)
 	FailOnError(err, msg)
 	return msgs
 }
@@ -68,7 +68,7 @@ func ConnectPaymentReceiver(ch *amqp.Channel, queue amqp.Queue, db *sql.DB) {
 
 	for d := range msgsChannel {
 		log.Println("processing message on payment consumer")
-		validatePayment(ch, db, d)
+		validateAndProcessPayment(ch, db, d)
 	}
 }
 
@@ -76,11 +76,11 @@ func ConnectPaymentReProcessorReceiver(ch *amqp.Channel, queue amqp.Queue, db *s
 	msgsChannel := CreateConsumer(ch, queue, PAYMENTS_EXCHANGE, "reprocess.payment", "payment-consumer-reprocess")
 	for d := range msgsChannel {
 		log.Println("receiving a payment to reprocess")
-		validatePayment(ch, db, d)
+		validateAndProcessPayment(ch, db, d)
 	}
 }
 
-func validatePayment(ch *amqp.Channel, db *sql.DB, message amqp.Delivery) error {
+func validateAndProcessPayment(ch *amqp.Channel, db *sql.DB, message amqp.Delivery) error {
 	var payment data.Payment
 	err := json.Unmarshal(message.Body, &payment)
 	if err != nil {
