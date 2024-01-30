@@ -5,7 +5,7 @@ Esse pequeno projeto, foi baseado em um desafio lançado pelo [Zan](https://twit
 - temos um serviço de pagamentos que consome dados de duas filas:
   - fila com dados de clientes para cadastrar
   - fila com dados de um pagamento para ser processado
-- esse serviço processa os pagamentos, porém ele só processa pagamentos de clientes cadastros
+- esse serviço processa os pagamentos, porém ele só processa pagamentos de clientes cadastrados
 
 O desafio proposto foi, como tratar o problema de race condition quando um evento de pagamento é recebido primeiro que o evento de cadastro de clientes (sem utilizar bancos de dados). Para simplificar mais temos a premissa que o evento de cadastro de cliente sempre será recebido.
 
