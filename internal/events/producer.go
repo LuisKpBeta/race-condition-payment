@@ -14,8 +14,6 @@ import (
 var CLIENT_EXCHANGE = "clients"
 var PAYMENTS_EXCHANGE = "payments"
 
-func CreateExchange(ch *amqp.Channel)
-
 func ConnectProducer(ch *amqp.Channel) {
 	//create/connect to clients exchange
 	err := ch.ExchangeDeclare(
